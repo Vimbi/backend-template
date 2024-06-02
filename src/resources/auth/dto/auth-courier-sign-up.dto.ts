@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
-  IsDateString,
-  IsIn,
-  Max,
-  Min,
+  IsNotEmpty,
+  Matches,
+  MaxLength,
+  NotContains,
   Validate,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
@@ -15,6 +15,10 @@ import { AuthSignUpDto } from './auth-sign-up.dto';
 import { parseMobileNumber } from '../../../utils/cast.helper';
 import { Country } from '../../countries/entities/country.entity';
 import { IsAdult } from '../../../validation/is-adult.validator';
+import {
+  PASSWORD_REGEX,
+  SHORT_LENGTH,
+} from '../../../common/constants/common-constants';
 
 export class AuthCourierSignUpDto extends AuthSignUpDto {
   @ApiProperty()
@@ -32,6 +36,17 @@ export class AuthCourierSignUpDto extends AuthSignUpDto {
   phone: string;
 
   @ApiProperty()
+  @NotContains(' ', { message: `password:${errorMsgs.noWhiteSpaces}` })
+  @MaxLength(SHORT_LENGTH, {
+    message: `password:${errorMsgs.maxLengthField} ${SHORT_LENGTH}`,
+  })
+  @IsNotEmpty({ message: `password:${errorMsgs.notEmptyField}` })
+  @Matches(PASSWORD_REGEX, {
+    message: `password:${errorMsgs.passwordMustMatch}`,
+  })
+  password: string;
+
+  @ApiProperty()
   @Validate(IsNotExist, [Country.name, 'id'], {
     message: `country:${errorMsgs.countryNotExist}`,
   })
@@ -39,11 +54,9 @@ export class AuthCourierSignUpDto extends AuthSignUpDto {
 
   @ApiProperty()
   @IsBoolean()
-  is_foreigner: boolean;
+  isForeigner: boolean;
 
   @ApiProperty()
   @Validate(IsAdult, { message: errorMsgs.adultsConstraint })
   birthDate: Date;
-
-  
 }

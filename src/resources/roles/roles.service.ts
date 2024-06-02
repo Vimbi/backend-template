@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { RoleDto } from './dto/role.dto';
 import { Role } from './entities/role.entity';
 import { errorMsgs } from '../../shared/error-messages';
@@ -35,14 +35,16 @@ export class RolesService {
   }
 
   /**
-   * Returns Role by id
-   * @param id Role id
+   * Returns Role by find options
+   * @param findOptions find options
    * @returns Role
    * @throws NotFoundException if Role not found
    */
 
-  public async findOneOrFail(id: string) {
-    const result = await this.repository.findOneBy({ id });
+  public async findOneByOrFail(
+    findOptions: FindOptionsWhere<Role> | FindOptionsWhere<Role>[],
+  ) {
+    const result = await this.repository.findOneBy(findOptions);
     if (!result) throw new NotFoundException(errorMsgs.roleNotExist);
     return result;
   }
@@ -56,7 +58,7 @@ export class RolesService {
    */
 
   public async update(id: string, dto: RoleDto) {
-    await this.findOneOrFail(id);
+    await this.findOneByOrFail({ id });
     await this.repository.update(id, dto);
     return await this.repository.findOneBy({ id });
   }
@@ -69,7 +71,7 @@ export class RolesService {
    */
 
   public async delete(id: string) {
-    await this.findOneOrFail(id);
+    await this.findOneByOrFail({ id });
     await this.repository.delete(id);
   }
 }

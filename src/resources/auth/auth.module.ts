@@ -9,7 +9,8 @@ import { RolesModule } from '../roles/roles.module';
 import { UsersModule } from '../users/users.module';
 import { UserStatusesModule } from '../user-statuses/user-statuses.module';
 import { AuthEmployeeConfirmService } from './services/auth-employee-confirm.service';
-import { AuthCourierSignUpService } from './auth-courier-sign-up.service';
+import { AuthCourierSignUpService } from './services/auth-courier-sign-up.service';
+import { AuthClientSignUpService } from './services/auth-client-sign-up.service';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthCourierSignUpService } from './auth-courier-sign-up.service';
   ],
   controllers: [AuthController],
   providers: [
+    AuthClientSignUpService,
     AuthCourierSignUpService,
     AuthEmployeeConfirmService,
     JwtStrategy,

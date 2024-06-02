@@ -1,11 +1,19 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../roles/roles.enum';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { EmployeeCreationService } from './services/employee.creation.service';
+import { responseResult } from '../../utils/swagger-schemas/response-result';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -21,7 +29,9 @@ export class UsersController {
 
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.admin)
-  @Post()
+  @Post('create-employee')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse(responseResult())
   async create(@Body() dto: CreateEmployeeDto) {
     return await this.employeeCreationService.create(dto);
   }

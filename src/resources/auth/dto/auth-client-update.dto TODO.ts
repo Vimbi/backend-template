@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
+  IsString,
   MaxLength,
   NotContains,
   Validate,
@@ -10,11 +11,15 @@ import { Transform } from 'class-transformer';
 import { errorMsgs } from '../../../shared/error-messages';
 import { IsNotExist } from '../../../validation/is-not-exists.validator';
 import { User } from '../../users/entities/user.entity';
-import { SHORT_LENGTH } from '../../../common/constants/common-constants';
+import {
+  LONG_LENGTH,
+  SHORT_LENGTH,
+} from '../../../common/constants/common-constants';
 import { parseMobileNumber } from '../../../utils/cast.helper';
-import { AuthSignUpDto } from './auth-sign-up.dto';
+import { IsExist } from '../../../validation/is-exists.validator';
+import { OrganizationType } from '../../organization-types/entities/organization-type.entity';
 
-export class AuthClientSignUpDto extends AuthSignUpDto {
+export class AuthClientUpdateDto {
   @ApiProperty({ example: 'email' })
   @Transform(({ value }) => value.toLowerCase().trim())
   @IsEmail({}, { message: `email:${errorMsgs.mustBeEmail}` })
@@ -41,4 +46,18 @@ export class AuthClientSignUpDto extends AuthSignUpDto {
     message: `phone:${errorMsgs.phoneExists}`,
   })
   phone: string;
+
+  @ApiProperty()
+  @Validate(IsExist, [OrganizationType, 'id'], {
+    message: `organizationTypeId:${errorMsgs.organizationTypeNotExist}`,
+  })
+  organizationTypeId: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(LONG_LENGTH, {
+    message: `organizationName:${errorMsgs.maxLengthField} ${LONG_LENGTH}`,
+  })
+  organizationName: string;
 }

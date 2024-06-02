@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, MaxLength, NotContains } from 'class-validator';
 import { SHORT_LENGTH } from '../../../common/constants/common-constants';
+import { RoleEnum } from '../roles.enum';
 
 export class RoleDto {
   @ApiProperty()
@@ -8,7 +9,7 @@ export class RoleDto {
   @MaxLength(SHORT_LENGTH)
   @IsNotEmpty()
   @NotContains(' ')
-  name: string;
+  name: RoleEnum;
 
   @ApiProperty()
   @IsString()

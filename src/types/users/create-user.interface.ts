@@ -1,13 +1,30 @@
-import { Role } from '../../resources/roles/entities/role.entity';
-import { UserStatus } from '../../resources/user-statuses/entities/user-status.entity';
+import { RoleEnum } from '../../resources/roles/roles.enum';
 
-export interface ICreateUser {
-  email: string;
-  password: string;
+export type TCreateUser = ICreateCourier | ICreateEmployee | ICreateClient;
+
+interface ICreateUser {
   firstName: string;
   lastName: string;
   patronymic: string;
   hash?: string;
-  role?: Role;
-  status?: UserStatus;
+  isForeigner: boolean;
+}
+
+interface ICreateCourier extends ICreateUser {
+  phone: string;
+  password: string;
+  countryId: string;
+  birthDate: Date;
+  roleName: RoleEnum.courier;
+}
+
+interface ICreateEmployee extends ICreateUser {
+  email: string;
+  roleName: RoleEnum.employee;
+}
+
+interface ICreateClient extends ICreateUser {
+  email: string;
+  phone: string;
+  roleName: RoleEnum.client;
 }

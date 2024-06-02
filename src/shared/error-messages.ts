@@ -1,6 +1,7 @@
 export const errorMsgs = {
   adultsConstraint: 'Регистрация возможна только для совершеннолетних',
   countryNotExist: 'Country does not exist',
+  courierCreation: 'Error creating courier',
   emailExists: 'Почта уже занята',
   employeeCreationError: 'Error creating employee',
   hashNotValid: 'Хэш не валиден',

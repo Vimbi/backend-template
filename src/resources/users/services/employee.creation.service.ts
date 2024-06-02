@@ -5,7 +5,6 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { Role } from '../../roles/entities/role.entity';
 import { RoleEnum } from '../../roles/roles.enum';
 import { CreateEmployeeDto } from '../dto/create-employee.dto';
 import { DataSource } from 'typeorm';
@@ -32,12 +31,6 @@ export class EmployeeCreationService {
   public async create(dto: CreateEmployeeDto) {
     const { email } = dto;
 
-    const employeeRole = await this.dataSource
-      .getRepository(Role)
-      .findOneByOrFail({
-        name: RoleEnum.employee,
-      });
-
     const hash = crypto
       .createHash('sha256')
       .update(randomStringGenerator())
@@ -52,7 +45,8 @@ export class EmployeeCreationService {
       await this.userCreationService.create(manager, {
         ...dto,
         hash,
-        role: employeeRole,
+        roleName: RoleEnum.employee,
+        isForeigner: false,
       });
 
       await this.mailService.employeeSignUp({

@@ -12,5 +12,7 @@ export const createErrorMessage = ({
   error: any;
 }) => {
   return `${customMessage}
+  Message: ${error.message}
+  Stack: ${error.stack}
   ${error}`;
 };
